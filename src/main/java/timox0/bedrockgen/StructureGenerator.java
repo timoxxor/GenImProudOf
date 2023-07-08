@@ -51,21 +51,17 @@ public class StructureGenerator {
                 chunkData.setBlock(location.getBlockX() + x, location.getBlockY() + y - 3, location.getBlockZ() + z, value);
             });
         } else if (i == 1) {
-            Box<BlockData> box = boxes.get(index).copy();
-            box.FlipX();
+            Box<BlockData> box = boxes.get(index).flipX();
             box.build((x, y, z, value) -> {
                 chunkData.setBlock(location.getBlockX() + x - box.sizeX(), location.getBlockY() + y - 3, location.getBlockZ() + z, value);
             });
         } else if (i == 2) {
-            Box<BlockData> box = boxes.get(index).copy();
-            box.FlipX();
-            box.FlipZ();
+            Box<BlockData> box = boxes.get(index).flipX().flipZ();
             box.build((x, y, z, value) -> {
                 chunkData.setBlock(location.getBlockX() + x - box.sizeX(), location.getBlockY() + y - 3, location.getBlockZ() + z - box.sizeZ(), value);
             });
         } else if (i == 3) {
-            Box<BlockData> box = boxes.get(index).copy();
-            box.FlipZ();
+            Box<BlockData> box = boxes.get(index).flipZ();
             box.build((x, y, z, value) -> {
                 chunkData.setBlock(location.getBlockX() + x, location.getBlockY() + y - 3, location.getBlockZ() + z - box.sizeZ(), value);
             });

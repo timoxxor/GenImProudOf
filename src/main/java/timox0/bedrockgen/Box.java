@@ -2,44 +2,44 @@ package timox0.bedrockgen;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.function.Function;
 
 public class Box<T> implements Serializable {
     static final long serialVersionUID = 33L;
-    private ArrayList<ArrayList<ArrayList<T>>> data;
+    private ArrayList<T> data;
+    private int sx, sy, sz;
 
     public Box(int x, int y, int z, T init) {
-        data = new ArrayList<>(x);
-        for (int ix = 0; ix < x; ix++) {
-            data.add(new ArrayList<>(y));
-            for (int iy = 0; iy < x; iy++) {
-                data.get(ix).add(new ArrayList<>(z));
-                for (int iz = 0; iz < x; iz++) {
-                    data.get(ix).get(iy).add(init);
-                }
-            }
+        sx = x;
+        sy = y;
+        sz = z;
+        int size = x * y * z;
+        data = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            data.add(init);
         }
     }
 
     public Box(int x, int y, int z, Getter<T> getter) {
-        data = new ArrayList<>(x);
-        for (int ix = 0; ix < x; ix++) {
-            data.add(new ArrayList<>(y));
-            for (int iy = 0; iy < x; iy++) {
-                data.get(ix).add(new ArrayList<>(z));
-                for (int iz = 0; iz < x; iz++) {
-                    data.get(ix).get(iy).add(getter.get(ix, iy, iz));
+        sx = x;
+        sy = y;
+        sz = z;
+        int size = x * y * z;
+        data = new ArrayList<>(size);
+        for (int ix = 0; ix < sx; ix++) {
+            for (int iy = 0; iy < sy; iy++) {
+                for (int iz = 0; iz < sz; iz++) {
+                    data.add(getter.get(ix, iy, iz));
                 }
             }
         }
     }
 
     public void build(Setter<T> setter) {
-        for (int x = 0; x < data.size(); x++) {
-            for (int y = 0; y < data.get(0).size(); y++) {
-                for (int z = 0; z < data.get(0).get(0).size(); z++) {
-                    setter.set(x, y, z, data.get(x).get(y).get(z));
+        for (int x = 0; x < sx; x++) {
+            for (int y = 0; y < sy; y++) {
+                for (int z = 0; z < sz; z++) {
+                    setter.set(x, y, z, get(x, y, z));
                 }
             }
         }
@@ -58,20 +58,26 @@ public class Box<T> implements Serializable {
     }
 
     public void set(int x, int y, int z, T value) {
-        data.get(x).get(y).set(z, value);
+        int i = z % sz + y * sz % sy + x * sz * sy % sx;
+        data.set(i, value);
     }
 
     public T get(int x, int y, int z) {
-        return data.get(x).get(y).get(z);
+        int i = z % sz + y % sy * sz + x % sx * sz * sy;
+        return data.get(i);
+    }
+
+    public T getWarp(int x, int y, int z) {
+        return get(x % sx, y % sy, z % sz);
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int x = 0; x < data.size(); x++) {
+        for (int x = 0; x < sx; x++) {
             sb.append("[\n");
-            for (int y = 0; y < data.get(0).size(); y++) {
+            for (int y = 0; y < sy; y++) {
                 sb.append("\t[");
-                for (int z = 0; z < data.get(0).get(0).size(); z++) {
+                for (int z = 0; z < sz; z++) {
                     sb.append(get(x, y, z));
                     sb.append(',');
                 }
@@ -92,36 +98,39 @@ public class Box<T> implements Serializable {
         Y get(int x, int y, int z);
     }
 
-    public void FlipX() {
-        Collections.reverse(data);
+    public Box<T> flipX() {
+        return new Box<T>(sx, sy, sz, (x, y, z) -> get(sx - 1 - x, y, z));
     }
 
-    public void FlipY() {
-        data.forEach(Collections::reverse);
+    public Box<T> flipY() {
+        return new Box<T>(sx, sy, sz, (x, y, z) -> get(x, sy - 1 - y, z));
     }
 
-    public void FlipZ() {
-        data.forEach(l -> l.forEach(Collections::reverse));
+    public Box<T> flipZ() {
+        return new Box<T>(sx, sy, sz, (x, y, z) -> get(x, y, sz - 1 - z));
     }
 
     public int sizeX() {
-        return data.size();
+        return sx;
     }
 
     public int sizeY() {
-        return data.get(0).size();
+        return sy;
     }
 
     public int sizeZ() {
-        return data.get(0).get(0).size();
+        return sz;
     }
 
-    public Box<T> copy() {
-        return new Box<T>(sizeX(), sizeY(), sizeZ(), this::get);
+    public Box(Box<T> box) {
+        sx = box.sx;
+        sy = box.sy;
+        sz = box.sz;
+        data = new ArrayList<>(box.data.size());
+        data.addAll(box.data);
     }
 
     public <N> Box<N> transform(Function<T, N> func) {
         return new Box<N>(sizeX(), sizeY(), sizeZ(), (x, y, z) -> func.apply(get(x, y, z)));
     }
-
 }
