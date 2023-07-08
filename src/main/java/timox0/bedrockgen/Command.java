@@ -25,9 +25,10 @@ public class Command implements CommandExecutor {
                 String arg = strings[0];
                 assert SelectionListener.getStartPos() != null;
                 assert SelectionListener.getEndPos() != null;
-                BoundingBox boundingBox = BoundingBox.of(SelectionListener.getStartPos(), SelectionListener.getEndPos());
-                Box box = new Box<Material>((int)boundingBox.getWidthX(), (int)boundingBox.getHeight(),
-                        (int)boundingBox.getWidthZ(), (x, y, z) -> {
+                BoundingBox boundingBox = BoundingBox.of(SelectionListener.getStartPos(),
+                        SelectionListener.getEndPos());
+                Box box = new Box<Material>((int)boundingBox.getWidthX()+1, (int)boundingBox.getHeight()+1,
+                        (int)boundingBox.getWidthZ()+1, (x, y, z) -> {
                             return ((Player) commandSender).getWorld().getBlockAt((int)boundingBox.getMinX()+x,
                                     (int)boundingBox.getMinY()+y, (int)boundingBox.getMinZ()+z).getType();
                         });
