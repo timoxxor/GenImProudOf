@@ -2,10 +2,10 @@ package timox0.bedrockgen;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.function.Function;
 
-public class Box<T extends Serializable> implements Serializable {
+public class Box<T> implements Serializable {
     static final long serialVersionUID = 33L;
     private ArrayList<ArrayList<ArrayList<T>>> data;
 
@@ -95,9 +95,11 @@ public class Box<T extends Serializable> implements Serializable {
     public void FlipX() {
         Collections.reverse(data);
     }
+
     public void FlipY() {
         data.forEach(Collections::reverse);
     }
+
     public void FlipZ() {
         data.forEach(l -> l.forEach(Collections::reverse));
     }
@@ -115,7 +117,11 @@ public class Box<T extends Serializable> implements Serializable {
     }
 
     public Box<T> copy() {
-        return new Box<T>(sizeX(),sizeY(),sizeZ(), this::get);
+        return new Box<T>(sizeX(), sizeY(), sizeZ(), this::get);
+    }
+
+    public <N> Box<N> transform(Function<T, N> func) {
+        return new Box<N>(sizeX(), sizeY(), sizeZ(), (x, y, z) -> func.apply(get(x, y, z)));
     }
 
 }
