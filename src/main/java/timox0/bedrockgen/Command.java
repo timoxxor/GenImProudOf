@@ -1,8 +1,6 @@
 package timox0.bedrockgen;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,11 +25,11 @@ public class Command implements CommandExecutor {
                 assert SelectionListener.getEndPos() != null;
                 BoundingBox boundingBox = BoundingBox.of(SelectionListener.getStartPos(),
                         SelectionListener.getEndPos());
-                Box box = new Box<Material>((int)boundingBox.getWidthX()+1, (int)boundingBox.getHeight()+1,
-                        (int)boundingBox.getWidthZ()+1, (x, y, z) -> {
-                            return ((Player) commandSender).getWorld().getBlockAt((int)boundingBox.getMinX()+x,
-                                    (int)boundingBox.getMinY()+y, (int)boundingBox.getMinZ()+z).getType();
-                        });
+                Box box = new Box<BlockInfo>((int) boundingBox.getWidthX() + 1, (int) boundingBox.getHeight() + 1,
+                        (int) boundingBox.getWidthZ() + 1, (x, y, z) -> {
+                    return new BlockInfo(((Player) commandSender).getWorld().getBlockAt((int) boundingBox.getMinX() + x,
+                            (int) boundingBox.getMinY() + y, (int) boundingBox.getMinZ() + z));
+                });
                 try {
                     Bukkit.getServer().getLogger().log(Level.WARNING, arg);
                     box.saveToFile(new File(plugin.getDataFolder(), arg));
