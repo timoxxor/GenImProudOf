@@ -84,52 +84,76 @@ public class  CustomWorldGenerator extends ChunkGenerator {
 
         }
 
-        for (char i = 0; i < 2; i++) {
-            // Carve box out
-            int posX = random.nextInt(9);
-            int posY = random.nextInt(256);
-            int posZ = random.nextInt(9);
+        // GigaChad box
+        Random random1 = new Random(chunkX/32+chunkZ/32*100L);
+        int rad = random1.nextInt(4);
+        boolean ae = (rad == 0);
+        if (ae){
+            int a = chunkX/16 % 2;
+            int b = chunkZ/16 % 2;
 
-            int boxSize = random.nextInt(3) + 6 ;
+            int posX = random1.nextInt(8);
+            int posY = random1.nextInt(256);
+            int posZ = random1.nextInt(8);
 
-            World world = Bukkit.getServer().getWorld("world");
+            int boxSize = 24;
 
-            Location corner0 = new Location(world, posX, posY, posZ);
-            Location corner1 = new Location(world, posX + boxSize, posY, posZ);
-            Location corner2 = new Location(world, posX + boxSize, posY, posZ + boxSize);
-            Location corner3 = new Location(world, posX, posY, posZ + boxSize);
-
-            int index = random.nextInt(5);
-
-            for (int x = posX; x < (posX + boxSize); x++) {
-                for (int y = posY; y < (posY + boxSize); y++) {
-                    for (int z = posZ; z < (posZ + boxSize); z++) {
-                        chunkData.setBlock(x, y, z, Material.AIR);
+            for (int x = a == 0 ? posX : 0; x < (a == 0 ? 16 : posX + boxSize);x++ ){
+                for (int z = b == 0 ? posZ : 0; z < (b == 0 ? 16 : posZ + boxSize);z++ ){
+                    for (int y = posY; y < (posY+boxSize); y++ ){
+                        chunkData.setBlock(x,y,z, Material.AIR);
                     }
                 }
             }
 
-            int pit = random.nextInt(2) + 1;
-            Location pitLoc = new Location(world, posX + pit, posY, posZ + pit );
+        } else {
+            for (char i = 0; i < 2; i++) {
+                // Carve box out
+                int posX = random.nextInt(9);
+                int posY = random.nextInt(256);
+                int posZ = random.nextInt(9);
 
-            if (index == 0) {
-                structureGenerator.generateStructure(chunkData, corner0 ,index);
-            } else if (index == 1) {
-                structureGenerator.generateStructure(chunkData, corner1 ,index);
-            } else if (index == 2) {
-                structureGenerator.generateStructure(chunkData, corner2 ,index);
-            } else if (index == 3){
-                structureGenerator.generateStructure(chunkData, corner3 ,index);
-            } else{
-                structureGenerator.generateStructure(chunkData, pitLoc , index);
-            }
+                int boxSize = random.nextInt(3) + 6 ;
 
-            Location[] corners = {corner0, corner1, corner2, corner3};
-            for (int j = 0; j < 3; j++) {
-                int cobwebCornerIndex = random.nextInt(4); // Choose a random corner
-                Location cobwebLocation = corners[cobwebCornerIndex].clone().add(cobwebCornerIndex ==1 || cobwebCornerIndex ==2 ? -1:0,
-                        boxSize-1, cobwebCornerIndex >= 2 ? -1:0);
-                chunkData.setBlock(cobwebLocation.getBlockX(), cobwebLocation.getBlockY(), cobwebLocation.getBlockZ(), Material.COBWEB);
+                World world = Bukkit.getServer().getWorld("world");
+
+                Location corner0 = new Location(world, posX, posY, posZ);
+                Location corner1 = new Location(world, posX + boxSize, posY, posZ);
+                Location corner2 = new Location(world, posX + boxSize, posY, posZ + boxSize);
+                Location corner3 = new Location(world, posX, posY, posZ + boxSize);
+
+                int index = random.nextInt(5);
+
+                for (int x = posX; x < (posX + boxSize); x++) {
+                    for (int y = posY; y < (posY + boxSize); y++) {
+                        for (int z = posZ; z < (posZ + boxSize); z++) {
+                            chunkData.setBlock(x, y, z, Material.AIR);
+                        }
+                    }
+                }
+
+                int pit = random.nextInt(2) + 1;
+                Location pitLoc = new Location(world, posX + pit, posY, posZ + pit );
+
+                if (index == 0) {
+                    structureGenerator.generateStructure(chunkData, corner0 ,index);
+                } else if (index == 1) {
+                    structureGenerator.generateStructure(chunkData, corner1 ,index);
+                } else if (index == 2) {
+                    structureGenerator.generateStructure(chunkData, corner2 ,index);
+                } else if (index == 3){
+                    structureGenerator.generateStructure(chunkData, corner3 ,index);
+                } else{
+                    structureGenerator.generateStructure(chunkData, pitLoc , index);
+                }
+
+                Location[] corners = {corner0, corner1, corner2, corner3};
+                for (int j = 0; j < 3; j++) {
+                    int cobwebCornerIndex = random.nextInt(4); // Choose a random corner
+                    Location cobwebLocation = corners[cobwebCornerIndex].clone().add(cobwebCornerIndex ==1 || cobwebCornerIndex ==2 ? -1:0,
+                            boxSize-1, cobwebCornerIndex >= 2 ? -1:0);
+                    chunkData.setBlock(cobwebLocation.getBlockX(), cobwebLocation.getBlockY(), cobwebLocation.getBlockZ(), Material.COBWEB);
+                }
             }
         }
 
