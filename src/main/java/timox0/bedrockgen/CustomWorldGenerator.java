@@ -85,7 +85,7 @@ public class  CustomWorldGenerator extends ChunkGenerator {
         }
 
         // GigaChad box
-        Random random1 = new Random(chunkX/32+chunkZ/32*100L);
+        Random random1 = new Random(chunkX/32*24500224L+chunkZ/32*1934850345L);
         int rad = random1.nextInt(4);
         boolean ae = (rad == 0);
         if (ae){
