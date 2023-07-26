@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.noise.PerlinNoiseGenerator;
 
 import java.util.ArrayList;
@@ -85,12 +84,12 @@ public class  CustomWorldGenerator extends ChunkGenerator {
         }
 
         // GigaChad box
-        Random random1 = new Random(chunkX/32*24500224L+chunkZ/32*1934850345L);
+        Random random1 = new Random(chunkX / 2 * 24500224L + chunkZ / 2 * 1934850345L);
         int rad = random1.nextInt(4);
         boolean ae = (rad == 0);
-        if (ae){
-            int a = chunkX/16 % 2;
-            int b = chunkZ/16 % 2;
+        if (ae) {
+            int a = chunkX % 2;
+            int b = chunkZ % 2;
 
             int posX = random1.nextInt(8);
             int posY = random1.nextInt(256);
@@ -98,9 +97,9 @@ public class  CustomWorldGenerator extends ChunkGenerator {
 
             int boxSize = 24;
 
-            for (int x = a == 0 ? posX : 0; x < (a == 0 ? 16 : posX + boxSize);x++ ){
-                for (int z = b == 0 ? posZ : 0; z < (b == 0 ? 16 : posZ + boxSize);z++ ){
-                    for (int y = posY; y < (posY+boxSize); y++ ){
+            for (int x = a == 0 ? posX : 0; x < (a == 0 ? 16 : posX + boxSize); x++) {
+                for (int z = b == 0 ? posZ : 0; z < (b == 0 ? 16 : posZ + boxSize); z++) {
+                    for (int y = posY; y < (posY + boxSize); y++) {
                         chunkData.setBlock(x,y,z, Material.AIR);
                     }
                 }
